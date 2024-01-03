@@ -381,25 +381,15 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 	}
 	
 	@Test public void testConstructorDuplicate() throws Exception {
-		var source = "class K { new(Object o) {} new(Object o) {} }";
-		XtendClass clazz = clazz(source);
-		helper.assertError(clazz, XTEND_CONSTRUCTOR, DUPLICATE_METHOD,
-				source.indexOf("new(Object o) {}"), "new(Object o) {}".length(),
-				"Duplicate", "constructor");
-		helper.assertError(clazz, XTEND_CONSTRUCTOR, DUPLICATE_METHOD,
-				source.lastIndexOf("new(Object o) {}"), "new(Object o) {}".length(),
-				"Duplicate", "constructor");
+		XtendClass clazz = clazz("class K { new(Object o) {} new(Object o) {} }");
+		helper.assertError(clazz, XTEND_CONSTRUCTOR, DUPLICATE_METHOD);
+		helper.assertError(clazz, XTEND_CONSTRUCTOR, DUPLICATE_METHOD);
 	}
 	
 	@Test public void testConstructorDuplicateErasure() throws Exception {
-		var source = "class K { new(java.util.List<Object> o) {} new(java.util.List<String> o) {} }";
-		XtendClass clazz = clazz(source);
-		helper.assertError(clazz, XTEND_CONSTRUCTOR, DUPLICATE_METHOD,
-				source.indexOf("new(java.util.List<Object> o) {}"), "new(java.util.List<Object> o) {}".length(),
-				"erasure", "constructor", "List<Object>");
-		helper.assertError(clazz, XTEND_CONSTRUCTOR, DUPLICATE_METHOD,
-				source.indexOf("new(java.util.List<String> o) {}"), "new(java.util.List<String> o) {}".length(),
-				"erasure", "constructor", "List<String>");
+		XtendClass clazz = clazz("class K { new(java.util.List<Object> o) {} new(java.util.List<String> o) {} }");
+		helper.assertError(clazz, XTEND_CONSTRUCTOR, DUPLICATE_METHOD);
+		helper.assertError(clazz, XTEND_CONSTRUCTOR, DUPLICATE_METHOD);
 	}
 	
 	@Test public void testConstructorDoesNotSupportTypeArguments() throws Exception {
@@ -587,10 +577,8 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 	}
 	
 	@Test public void testVoidInDependency() throws Exception {
-		var source = "class X { @Inject void v }";
-		XtendClass clazz = clazz(source);
-		helper.assertError(clazz, TypesPackage.Literals.JVM_TYPE_REFERENCE, INVALID_USE_OF_TYPE,
-				source.indexOf("void"), "void".length());
+		XtendClass clazz = clazz("class X { @Inject void v }");
+		helper.assertError(clazz, TypesPackage.Literals.JVM_TYPE_REFERENCE, INVALID_USE_OF_TYPE);
 	}
 	
 	@Test public void testVoidInReturn() throws Exception {
@@ -599,12 +587,8 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 	}
 	
 	@Test public void testParameterTypeMayNotBeVoid() throws Exception {
-		var source = "def void foo(void myParam) { }";
-		XtendFunction function = function(source);
-		var lastIndexOf = source.lastIndexOf("void");
-		helper.assertError(function, TypesPackage.Literals.JVM_TYPE_REFERENCE,
-				INVALID_USE_OF_TYPE,
-				lastIndexOf + TEMPLATE_CLASS_PREFIX_SIZE, "void".length());
+		XtendFunction function = function("def void foo(void myParam) { }");
+		helper.assertError(function, TypesPackage.Literals.JVM_TYPE_REFERENCE, INVALID_USE_OF_TYPE);
 	}
 	
 	@Test public void testVarArgIsNotExtension() throws Exception {
@@ -920,38 +904,23 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 	}
 
 	@Test public void testClassExtendsInterface() throws Exception {
-		var source = "class Foo extends Cloneable {}";
-		XtendClass clazz = clazz(source);
-		helper.assertError(clazz, XTEND_CLASS, CLASS_EXPECTED,
-				source.indexOf("Cloneable"), "Cloneable".length(),
-				"Superclass");
+		XtendClass clazz = clazz("class Foo extends Cloneable {}");
+		helper.assertError(clazz, XTEND_CLASS, CLASS_EXPECTED, "Superclass");
 	}
 
 	@Test public void testClassImplementsClass() throws Exception {
-		var source = "class Foo implements Object {}";
-		XtendClass clazz = clazz(source);
-		helper.assertError(clazz, XTEND_CLASS, INTERFACE_EXPECTED,
-				source.indexOf("Object"), "Object".length(),
-				"Implemented", "interface");
+		XtendClass clazz = clazz("class Foo implements Object {}");
+		helper.assertError(clazz, XTEND_CLASS, INTERFACE_EXPECTED, "Implemented", "interface");
 	}
-
+	
 	@Test public void testClassExtendsItself() throws Exception {
-		var source = "class Foo extends Foo {}";
-		XtendClass clazz = clazz(source);
-		helper.assertError(clazz, XTEND_CLASS, CYCLIC_INHERITANCE,
-				source.indexOf("Foo"), "Foo".length(),
-				"hierarchy", "cycles");
+		XtendClass clazz = clazz("class Foo extends Foo {}");
+		helper.assertError(clazz, XTEND_CLASS, CYCLIC_INHERITANCE, "hierarchy", "cycles");
 	}
 	
 	@Test public void testClassUniqueNames() throws Exception {
-		var source = "class Foo {} class Foo {}";
-		XtendClass clazz = clazz(source);
-		helper.assertError(clazz, XTEND_CLASS, DUPLICATE_TYPE_NAME,
-				source.indexOf("Foo"), "Foo".length(),
-				"type", "already defined");
-		helper.assertError(clazz, XTEND_CLASS, DUPLICATE_TYPE_NAME,
-				source.lastIndexOf("Foo"), "Foo".length(),
-				"type", "already defined");
+		XtendClass clazz = clazz("class Foo {} class Foo {}");
+		helper.assertError(clazz, XTEND_CLASS, DUPLICATE_TYPE_NAME, "type", "already defined");
 	}
 	
 	@Test public void testInterfaceExtendsInterface() throws Exception {
@@ -960,11 +929,8 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 	}
 
 	@Test public void testInterfaceExtendsClass() throws Exception {
-		var source = "interface Foo extends Object {}";
-		XtendInterface interfaze = interfaze(source);
-		helper.assertError(interfaze, XTEND_INTERFACE, INTERFACE_EXPECTED,
-				source.indexOf("Object"), "Object".length(),
-				"Extended", "interface");
+		XtendInterface interfaze = interfaze("interface Foo extends Object {}");
+		helper.assertError(interfaze, XTEND_INTERFACE, INTERFACE_EXPECTED, "Extended", "interface");
 	}
 	
 	@Test public void testInterfaceExtendsItself() throws Exception {
@@ -990,20 +956,13 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 	}
 	
 	@Test public void testInheritanceCycle() throws Exception {
-		var source = "package test "
+		Iterator<XtendTypeDeclaration> types = file("package test "
 				+ "class Foo extends Bar {}"
 				+ "class Bar extends Baz {}"
-				+ "class Baz extends Foo {}";
-		Iterator<XtendTypeDeclaration> types = file(source).getXtendTypes().iterator();
-		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE,
-				source.indexOf("Foo"), "Foo".length(),
-				"hierarchy", "cycles");
-		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE,
-				source.lastIndexOf("Bar"), "Bar".length(),
-				"hierarchy", "cycles");
-		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE,
-				source.lastIndexOf("Baz"), "Baz".length(),
-				"hierarchy", "cycles");
+				+ "class Baz extends Foo {}").getXtendTypes().iterator();
+		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE, "hierarchy", "cycles");
+		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE, "hierarchy", "cycles");
+		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE, "hierarchy", "cycles");
 	}
 	
 	@Test public void testInheritanceCycle_1() throws Exception {
@@ -1037,7 +996,6 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 				+ "class Foo implements Bar { interface I {} }"
 				+ "interface Bar extends Foo.I {}").getXtendTypes().iterator();
 		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE, "hierarchy", "cycles");
-		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE, "hierarchy", "cycles");
 	}
 	
 	@Test public void testInheritanceCycle_5() throws Exception {
@@ -1045,21 +1003,6 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 				+ "class Foo extends Bar { static class Baz {} }"
 				+ "class Bar extends Foo.Baz {}").getXtendTypes().iterator();
 		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE, "hierarchy", "cycles");
-		helper.assertError(types.next(), XTEND_CLASS, CYCLIC_INHERITANCE, "hierarchy", "cycles");
-	}
-
-	@Test public void testInheritanceCycle_6() throws Exception {
-		Iterator<XtendTypeDeclaration> types = file("package test "
-				 + "class Container {"
-				 + "  interface Foo extends Bar {}"
-				 + "  interface Bar extends Baz {}"
-				 + "  interface Baz extends Foo {}"
-				 + "}").getXtendTypes().iterator();
-		var container = types.next();
-		var internalTypes = container.getMembers().iterator();
-		helper.assertError(internalTypes.next(), XTEND_INTERFACE, CYCLIC_INHERITANCE, "hierarchy", "cycles");
-		helper.assertError(internalTypes.next(), XTEND_INTERFACE, CYCLIC_INHERITANCE, "hierarchy", "cycles");
-		helper.assertError(internalTypes.next(), XTEND_INTERFACE, CYCLIC_INHERITANCE, "hierarchy", "cycles");
 	}
 
 	@Test public void testMultipleInheritance() throws Exception {
@@ -1100,28 +1043,15 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 	}
 	
 	@Test public void testDuplicateFieldName() throws Exception {
-		var source = "class Foo { int foo String foo double foo }";
-		Iterator<XtendMember> members = clazz(source).getMembers().iterator();
-		helper.assertError(members.next(), XTEND_FIELD, DUPLICATE_FIELD,
-				source.indexOf("foo"), "foo".length(),
-				"foo", "duplicate");
-		helper.assertError(members.next(), XTEND_FIELD, DUPLICATE_FIELD,
-				source.indexOf("String foo") + "String ".length(), "foo".length(),
-				"foo", "duplicate");
-		helper.assertError(members.next(), XTEND_FIELD, DUPLICATE_FIELD,
-				source.indexOf("double foo") + "double ".length(), "foo".length(),
-				"foo", "duplicate");
+		XtendClass clazz = clazz("class Foo { int foo String foo double foo }");
+		for(XtendMember member: clazz.getMembers())
+			helper.assertError(member, XTEND_FIELD, DUPLICATE_FIELD, "foo", "duplicate");
 	}
 	
 	@Test public void testDuplicateAnonymousExtension() throws Exception {
-		var source = "import com.google.inject.Inject class Foo { @Inject extension String @Inject extension String }";
-		Iterator<XtendMember> members = clazz(source).getMembers().iterator();
-		helper.assertError(members.next(), XTEND_FIELD, DUPLICATE_FIELD,
-				source.indexOf("String"), "String".length(),
-				"duplicate", "same", "type");
-		helper.assertError(members.next(), XTEND_FIELD, DUPLICATE_FIELD,
-				source.lastIndexOf("String"), "String".length(),
-				"duplicate", "same", "type");
+		XtendClass clazz = clazz("import com.google.inject.Inject class Foo { @Inject extension String @Inject extension String }");
+		for(XtendMember member: clazz.getMembers())
+			helper.assertError(member, XTEND_FIELD, DUPLICATE_FIELD, "duplicate", "same", "type");
 	}
 	
 	@Test public void testCaseFunctionNoParameters() throws Exception {
@@ -1258,27 +1188,15 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 	}
 
 	@Test public void testDuplicateParameter() throws Exception {
-		var source = "def foo(int x, int x) {null}";
-		XtendFunction function = function(source);
-		helper.assertError(function, XTEND_FUNCTION, DUPLICATE_PARAMETER_NAME,
-				source.indexOf("int x") + TEMPLATE_CLASS_PREFIX_SIZE, "int x".length(),
-				"duplicate", "x");
-		helper.assertError(function, XTEND_FUNCTION, DUPLICATE_PARAMETER_NAME,
-				source.lastIndexOf("int x") + TEMPLATE_CLASS_PREFIX_SIZE, "int x".length(),
-				"duplicate", "x");
+		XtendFunction function = function("def foo(int x, int x) {null}");
+		helper.assertError(function, XTEND_FUNCTION, DUPLICATE_PARAMETER_NAME, "duplicate", "x");
 	}
-
+	
 	@Test public void testDuplicateConstructorParameter() throws Exception {
-		var source = "new(int x, int x) {null}";
-		XtendConstructor constructor = constructor(source);
-		helper.assertError(constructor, XTEND_CONSTRUCTOR, DUPLICATE_PARAMETER_NAME,
-				source.indexOf("int x") + TEMPLATE_CLASS_PREFIX_SIZE, "int x".length(),
-				"duplicate", "x");
-		helper.assertError(constructor, XTEND_CONSTRUCTOR, DUPLICATE_PARAMETER_NAME,
-				source.lastIndexOf("int x") + TEMPLATE_CLASS_PREFIX_SIZE, "int x".length(),
-				"duplicate", "x");
+		XtendConstructor constructor = constructor("new(int x, int x) {null}");
+		helper.assertError(constructor, XTEND_CONSTRUCTOR, DUPLICATE_PARAMETER_NAME, "duplicate", "x");
 	}
-
+	
 	@Test public void testDuplicateParameter_CreateExtension_01() throws Exception {
 		XtendFunction function = function("def create newArrayList foo(int it) {}");
 		helper.assertError(function, CREATE_EXTENSION_INFO, DUPLICATE_PARAMETER_NAME, "duplicate", "implicit", "it");
@@ -2367,19 +2285,16 @@ public class XtendValidationTest extends AbstractXtendTestCase {
 
 	@Test
 	public void testAnonymousClassExtendsFinal() throws Exception {
-		var source = "class Foo {"
-		+ " val bar = new Bar() {" 
-		+ " }"
-		+ "}"
-		+ "final class Bar {"
-		+ "}";
-		XtendFile file = file(source);
-		helper.assertError(file.getXtendTypes().get(0),
-				XCONSTRUCTOR_CALL, OVERRIDDEN_FINAL,
-				source.indexOf("Bar"), "Bar".length(),
-				"Attempt to override final class");
+		XtendFile file = file(
+				"class Foo {"
+				+ " val bar = new Bar() {" 
+				+ " }"
+				+ "}"
+				+ "final class Bar {"
+				+ "}");
+		helper.assertError(file.getXtendTypes().get(0), XCONSTRUCTOR_CALL, OVERRIDDEN_FINAL);
 	}
-
+	
 	@Test 
 	public void testVoidInFunctionParams() throws Exception {
 		XtendFile file = file(

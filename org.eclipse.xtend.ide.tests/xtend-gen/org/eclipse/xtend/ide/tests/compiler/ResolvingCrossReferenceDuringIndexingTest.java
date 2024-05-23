@@ -312,6 +312,7 @@ public class ResolvingCrossReferenceDuringIndexingTest extends AbstractXtendUITe
       final IProject annoProject = WorkbenchTestHelper.createPluginProject("annotation.project", "com.google.inject", 
         "org.eclipse.xtend.lib", "org.eclipse.xtext.xbase.lib", "org.eclipse.xtend.core", "org.junit");
       WorkbenchTestHelper.addExportedPackages(annoProject, "myannotation");
+      IResourcesSetupUtil.waitForJdtIndex();
       Path _path = new Path("/annotation.project/src/myannotation/MyAnnotation.xtend");
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("package myannotation");

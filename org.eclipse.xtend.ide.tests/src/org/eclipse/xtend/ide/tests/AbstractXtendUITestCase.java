@@ -55,6 +55,7 @@ public abstract class AbstractXtendUITestCase extends Assert {
 		TargetPlatformUtil.setTargetPlatform(AbstractXtendTestCase.class);
 		IResourcesSetupUtil.cleanWorkspace();
 		WorkbenchTestHelper.createPluginProject(WorkbenchTestHelper.TESTPROJECT_NAME);
+		IResourcesSetupUtil.waitForJdtIndex();
 	}
 
 	@AfterClass

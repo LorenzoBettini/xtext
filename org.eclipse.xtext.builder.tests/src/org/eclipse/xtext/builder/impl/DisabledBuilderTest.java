@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.xtext.builder.builderState.IBuilderState;
 import org.eclipse.xtext.ui.XtextProjectHelper;
+import org.eclipse.xtext.ui.testing.util.IResourcesSetupUtil;
 import org.eclipse.xtext.ui.util.JREContainerProvider;
 import org.eclipse.xtext.ui.util.PluginProjectFactory;
 import org.junit.Test;
@@ -68,6 +69,7 @@ public class DisabledBuilderTest extends AbstractBuilderTest {
 		if(dependency != null)
 			projectFactory.addRequiredBundles(Collections.singletonList(dependency));
 		IProject result = projectFactory.createProject(new NullProgressMonitor(), null);
+		IResourcesSetupUtil.waitForJdtIndex();
 		return result;
 	}
 

@@ -20,6 +20,7 @@ import org.junit.Test
 import static org.eclipse.xtext.ui.testing.util.IResourcesSetupUtil.*
 
 import static extension org.eclipse.ui.texteditor.MarkerUtilities.*
+import org.eclipse.xtext.ui.testing.util.IResourcesSetupUtil
 
 /**
  * @author Anton Kosyakov - Initial contribution and API
@@ -194,6 +195,7 @@ class ResolvingCrossReferenceDuringIndexingTest extends AbstractXtendUITestCase 
 		val annoProject = WorkbenchTestHelper.createPluginProject("annotation.project", "com.google.inject",
 			"org.eclipse.xtend.lib", "org.eclipse.xtext.xbase.lib", "org.eclipse.xtend.core", "org.junit");
 		WorkbenchTestHelper.addExportedPackages(annoProject, "myannotation")
+		IResourcesSetupUtil.waitForJdtIndex();
 
 		createFile(new Path('/annotation.project/src/myannotation/MyAnnotation.xtend'),
 			'''

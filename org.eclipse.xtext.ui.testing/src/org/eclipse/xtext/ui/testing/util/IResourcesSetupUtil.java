@@ -501,7 +501,7 @@ public class IResourcesSetupUtil {
 		}
 
 		if (foundJavaProject) {
-			JavaModelManager.getIndexManager().waitForIndex(true, monitor);
+			indexManager.waitForIndex(true, monitor);
 			// taken from https://github.com/eclipse-jdt/eclipse.jdt.core/blob/master/org.eclipse.jdt.core.tests.model/src/org/eclipse/jdt/core/tests/model/AbstractJavaModelTests.java
 			// dummy query for waiting until the indexes are ready
 			SearchEngine engine = new SearchEngine();

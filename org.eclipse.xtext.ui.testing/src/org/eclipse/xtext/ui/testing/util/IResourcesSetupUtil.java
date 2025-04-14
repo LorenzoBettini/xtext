@@ -37,6 +37,12 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
+import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.texteditor.MarkerUtilities;
@@ -474,7 +480,7 @@ public class IResourcesSetupUtil {
 	/**
 	 * @since 2.38
 	 */
-	public static void waitForJdtIndex() {
+	public static void waitForJdtIndex() throws CoreException {
 		waitForJdtIndex(null);
 	}
 
@@ -482,7 +488,37 @@ public class IResourcesSetupUtil {
 	 * @since 2.38
 	 */
 	@SuppressWarnings("restriction")
-	public static void waitForJdtIndex(IProgressMonitor monitor) {
-		JavaModelManager.getIndexManager().waitForIndex(true, monitor);
+	public static void waitForJdtIndex(IProgressMonitor monitor) throws CoreException {
+		var indexManager = JavaModelManager.getIndexManager();
+		var foundJavaProject = false;
+
+		// Queue all Java projects for indexing
+		for (IProject project : root().getProjects()) {
+			if (project.isOpen() && project.hasNature(JavaCore.NATURE_ID)) {
+				foundJavaProject = true;
+				indexManager.indexAll(project);
+			}
+		}
+
+		if (foundJavaProject) {
+			JavaModelManager.getIndexManager().waitForIndex(true, monitor);
+			// taken from https://github.com/eclipse-jdt/eclipse.jdt.core/blob/master/org.eclipse.jdt.core.tests.model/src/org/eclipse/jdt/core/tests/model/AbstractJavaModelTests.java
+			// dummy query for waiting until the indexes are ready
+			SearchEngine engine = new SearchEngine();
+			IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+			engine.searchAllTypeNames(null,
+				SearchPattern.R_EXACT_MATCH,
+				"!@$#!@".toCharArray(),
+				SearchPattern.R_PATTERN_MATCH | SearchPattern.R_CASE_SENSITIVE,
+				IJavaSearchConstants.CLASS, scope,
+				new TypeNameRequestor() {
+					@Override
+					public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames,
+							String path) {
+					}
+				},
+				IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+				null);
+		}
 	}
 }

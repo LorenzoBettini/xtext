@@ -518,7 +518,7 @@ public class IResourcesSetupUtil {
 					}
 				},
 				IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
-				null);
+				monitor);
 		}
 	}
 }

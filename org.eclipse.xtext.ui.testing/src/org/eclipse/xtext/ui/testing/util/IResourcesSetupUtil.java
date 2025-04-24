@@ -37,6 +37,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.texteditor.MarkerUtilities;
@@ -474,7 +475,7 @@ public class IResourcesSetupUtil {
 	/**
 	 * @since 2.38
 	 */
-	public static void waitForJdtIndex() {
+	public static void waitForJdtIndex() throws CoreException {
 		waitForJdtIndex(null);
 	}
 
@@ -482,7 +483,20 @@ public class IResourcesSetupUtil {
 	 * @since 2.38
 	 */
 	@SuppressWarnings("restriction")
-	public static void waitForJdtIndex(IProgressMonitor monitor) {
-		JavaModelManager.getIndexManager().waitForIndex(true, monitor);
+	public static void waitForJdtIndex(IProgressMonitor monitor) throws CoreException {
+		var indexManager = JavaModelManager.getIndexManager();
+		var foundJavaProject = false;
+
+		// Queue all Java projects for indexing
+		for (IProject project : root().getProjects()) {
+			if (project.isOpen() && project.hasNature(JavaCore.NATURE_ID)) {
+				foundJavaProject = true;
+				indexManager.indexAll(project);
+			}
+		}
+
+		if (foundJavaProject) {
+			indexManager.waitForIndex(true, monitor);
+		}
 	}
 }

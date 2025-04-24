@@ -506,19 +506,24 @@ public class IResourcesSetupUtil {
 			// dummy query for waiting until the indexes are ready
 			SearchEngine engine = new SearchEngine();
 			IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
-			engine.searchAllTypeNames(null,
-				SearchPattern.R_EXACT_MATCH,
-				"!@$#!@".toCharArray(),
-				SearchPattern.R_PATTERN_MATCH | SearchPattern.R_CASE_SENSITIVE,
-				IJavaSearchConstants.CLASS, scope,
-				new TypeNameRequestor() {
-					@Override
-					public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames,
-							String path) {
-					}
-				},
-				IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
-				monitor);
+			try {
+				engine.searchAllTypeNames(null,
+					SearchPattern.R_EXACT_MATCH,
+					"!@$#!@".toCharArray(),
+					SearchPattern.R_PATTERN_MATCH | SearchPattern.R_CASE_SENSITIVE,
+					IJavaSearchConstants.CLASS, scope,
+					new TypeNameRequestor() {
+						@Override
+						public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames,
+								String path) {
+						}
+					},
+					IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+					monitor);
+			} catch (OperationCanceledException e) {
+				// In Windows GitHub Actions this happens
+				e.printStackTrace();
+			}
 		}
 	}
 }

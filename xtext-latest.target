@@ -83,6 +83,12 @@
 					<version>2.1.1</version>
 					<type>jar</type>
 				</dependency>
+				<dependency>
+					<groupId>org.xtext</groupId>
+					<artifactId>antlr-generator</artifactId>
+					<version>3.2.1</version>
+					<type>jar</type>
+				</dependency>
 			</dependencies>
 			<instructions><![CDATA[
 Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}

@@ -83,6 +83,20 @@
 					<version>2.1.1</version>
 					<type>jar</type>
 				</dependency>
+			</dependencies>
+			<instructions><![CDATA[
+Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
+version:               ${version_cleanup;${mvnVersion}}
+Bundle-SymbolicName:   de.itemis.xtext.antlr
+Bundle-Version:        ${version}
+Import-Package:        *;resolution:=optional
+Require-Bundle: org.antlr.generator;bundle-version="3.2.0";visibility:=reexport
+Export-Package:        *;version="${version}";-noimport:=true
+DynamicImport-Package: *
+]]></instructions>
+		</location>
+		<location includeDependencyDepth="none" includeSource="true" missingManifest="generate" type="Maven">
+			<dependencies>
 				<dependency>
 					<groupId>org.xtext</groupId>
 					<artifactId>antlr-generator</artifactId>
@@ -93,7 +107,7 @@
 			<instructions><![CDATA[
 Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
-Bundle-SymbolicName:   de.itemis.xtext.antlr
+Bundle-SymbolicName:   org.antlr.generator
 Bundle-Version:        ${version}
 Import-Package:        *;resolution:=optional
 Export-Package:        *;version="${version}";-noimport:=true

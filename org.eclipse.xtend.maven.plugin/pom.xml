@@ -212,6 +212,7 @@
 							<goal>test</goal>
 						</goals>
 						<configuration>
+							<failIfNoTests>true</failIfNoTests>
 							<excludes>
 								<exclude>**/*Test.java</exclude>
 							</excludes>
@@ -221,6 +222,14 @@
 						</configuration>
 					</execution>
 				</executions>
+				<dependencies>
+					<!-- force to run with JUnit4 -->
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>${maven-surefire-version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>

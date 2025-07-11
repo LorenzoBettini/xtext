@@ -111,6 +111,10 @@
 					<groupId>p2.eclipse.plugin</groupId>
 					<artifactId>de.itemis.xtext.antlr</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>p2.eclipse.plugin</groupId>
+					<artifactId>org.antlr.generator</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 	</dependencies>

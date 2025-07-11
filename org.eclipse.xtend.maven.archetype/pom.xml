@@ -106,6 +106,12 @@
 			<artifactId>xtend-maven-plugin</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>p2.eclipse.plugin</groupId>
+					<artifactId>de.itemis.xtext.antlr</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<profiles>

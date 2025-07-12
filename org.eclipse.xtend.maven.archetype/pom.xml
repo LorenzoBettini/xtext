@@ -101,21 +101,17 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>org.eclipse.xtext</groupId>
+			<artifactId>org.eclipse.xtext.xtext.generator.dependencies</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<!-- IT Tests require xtend-maven-plugin is fully build -->
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>xtend-maven-plugin</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>de.itemis.xtext.antlr</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>org.antlr.generator</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 	<profiles>

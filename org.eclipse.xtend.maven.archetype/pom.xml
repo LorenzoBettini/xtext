@@ -105,6 +105,12 @@
 			<artifactId>org.eclipse.xtext.xtext.generator.dependencies</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>p2.eclipse.plugin</groupId>
+					<artifactId>org.aopalliance</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<!-- IT Tests require xtend-maven-plugin is fully build -->
@@ -112,6 +118,12 @@
 			<artifactId>xtend-maven-plugin</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>p2.eclipse.plugin</groupId>
+					<artifactId>org.aopalliance</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<profiles>

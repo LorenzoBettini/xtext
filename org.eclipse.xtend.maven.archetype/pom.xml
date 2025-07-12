@@ -131,6 +131,14 @@
 					<groupId>p2.eclipse.plugin</groupId>
 					<artifactId>com.sun.jna.source</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>p2.eclipse.plugin</groupId>
+					<artifactId>org.apache.ant</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>p2.eclipse.plugin</groupId>
+					<artifactId>org.apache.ant.source</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 	</dependencies>

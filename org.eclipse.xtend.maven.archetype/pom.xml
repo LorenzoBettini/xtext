@@ -117,6 +117,10 @@
 				</exclusion>
 				<exclusion>
 					<groupId>p2.eclipse.plugin</groupId>
+					<artifactId>org.antlr.runtime</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>p2.eclipse.plugin</groupId>
 					<artifactId>org.aopalliance</artifactId>
 				</exclusion>
 				<exclusion>

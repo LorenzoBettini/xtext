@@ -74,9 +74,6 @@
 						<goals>
 							<goal>install</goal>
 						</goals>
-						<configuration>
-							<scope>test</scope>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -105,41 +102,6 @@
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>xtend-maven-plugin</artifactId>
 			<version>${project.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>de.itemis.xtext.antlr</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>org.antlr.generator</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>org.antlr.runtime</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>org.aopalliance</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>com.sun.jna</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>com.sun.jna.source</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>org.apache.ant</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>p2.eclipse.plugin</groupId>
-					<artifactId>org.apache.ant.source</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 	<profiles>

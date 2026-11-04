@@ -77,7 +77,7 @@
 	<target name="compile" depends="compiler.init">
 		<echo>Xtext version: ${xtext-version}</echo>
 		<echo>Deps dir: ${deps.dir}</echo>
-		<xtendc destdir="${dest.dir}" srcdir="../test data/test">
+		<xtendc destdir="${dest.dir}" srcdir="../test data/test" fork="true" failonerror="true">
 			<classpath refid="xtend.deps" />
 		</xtendc>
 		
@@ -103,7 +103,7 @@
 	</target>
 
 	<target name="compile.multisrc" depends="compiler.init">
-		<xtendc destdir="./xtend-gen">
+		<xtendc destdir="./xtend-gen" fork="true" failonerror="true">
 			<srcdir>
 				<pathelement path="../test data/test" />
 				<pathelement path="../bug396747/test" />

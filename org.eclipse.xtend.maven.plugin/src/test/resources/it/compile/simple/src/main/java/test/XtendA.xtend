@@ -2,6 +2,12 @@ package test
 
 class XtendA extends JavaB {
 
+	def void use(java.util.function.Consumer<String> consumer) {}
+
+	def void convert((String)=>void fn) {
+		use(fn)
+	}
+
 	def JavaB test2(XtendC s) {
 		return s.foo.newJavaB
 	}

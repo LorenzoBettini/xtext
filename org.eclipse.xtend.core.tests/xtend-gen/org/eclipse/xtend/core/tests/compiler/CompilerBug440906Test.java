@@ -87,10 +87,10 @@ public class CompilerBug440906Test extends AbstractXtendCompilerTest {
     _builder_1.append("return IterableExtensions.<Object>sortWith(Collections.<Object>unmodifiableList(CollectionLiterals.<Object>newArrayList()), new Comparator<Object>() {");
     _builder_1.newLine();
     _builder_1.append("        ");
-    _builder_1.append("public int compare(Object arg0, Object arg1) {");
+    _builder_1.append("public int compare(Object o1, Object o2) {");
     _builder_1.newLine();
     _builder_1.append("          ");
-    _builder_1.append("return C.this.m().apply(arg0, arg1);");
+    _builder_1.append("return C.this.m().apply(o1, o2);");
     _builder_1.newLine();
     _builder_1.append("        ");
     _builder_1.append("}");
@@ -195,10 +195,10 @@ public class CompilerBug440906Test extends AbstractXtendCompilerTest {
     _builder_1.append("return IterableExtensions.<Object>sortWith(Collections.<Object>unmodifiableList(CollectionLiterals.<Object>newArrayList()), new Comparator<Object>() {");
     _builder_1.newLine();
     _builder_1.append("        ");
-    _builder_1.append("public int compare(Object arg0, Object arg1) {");
+    _builder_1.append("public int compare(Object o1, Object o2) {");
     _builder_1.newLine();
     _builder_1.append("          ");
-    _builder_1.append("return _final_xblockexpression.apply(arg0, arg1);");
+    _builder_1.append("return _final_xblockexpression.apply(o1, o2);");
     _builder_1.newLine();
     _builder_1.append("        ");
     _builder_1.append("}");

@@ -494,8 +494,8 @@ class CompilerBugTest extends AbstractXtendCompilerTest {
 			    boolean _equals = Objects.equals("foo", null);
 			    if (_equals) {
 			      return new Function1<String, Boolean>() {
-			          public Boolean apply(String arg0) {
-			            return C.this.myGuavaPredicate().apply(arg0);
+			          public Boolean apply(String p) {
+			            return C.this.myGuavaPredicate().apply(p);
 			          }
 			      };
 			    } else {

@@ -62,7 +62,14 @@ public class XtendCompilerMojoIT {
 
 	@Test
 	public void simpleProject() throws Exception {
-		verifyErrorFreeLog(ROOT + "/simple");
+		Verifier verifier = MavenVerifierUtil.newVerifier(ROOT + "/simple");
+		verifier.executeGoal("verify");
+		verifier.verifyErrorFreeLog();
+		String generatedJava = verifier.getBasedir() + "/src/main/generated-sources/xtend/test/XtendA.java";
+		verifier.verifyFilePresent(generatedJava);
+		String content = FileUtils.fileRead(new File(generatedJava), "UTF-8");
+		Assert.assertTrue(content, content.contains("public void accept(String t)"));
+		Assert.assertTrue(content, content.contains("fn.apply(t);"));
 	}
 
 	@Test

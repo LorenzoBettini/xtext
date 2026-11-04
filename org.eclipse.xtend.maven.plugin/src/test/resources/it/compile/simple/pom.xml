@@ -9,6 +9,13 @@
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<artifactId>simple</artifactId>
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.xtext</groupId>
+			<artifactId>org.eclipse.xtend.lib.macro</artifactId>
+			<version>${xtextVersion}</version>
+		</dependency>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>

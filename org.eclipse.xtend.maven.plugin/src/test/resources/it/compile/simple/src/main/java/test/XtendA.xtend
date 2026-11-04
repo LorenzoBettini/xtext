@@ -1,6 +1,11 @@
 package test
 
-class XtendA extends JavaB {
+import org.eclipse.xtend.lib.annotations.Delegate
+import org.eclipse.xtend.lib.macro.file.FileLocations
+
+class XtendA extends JavaB implements FileLocations {
+
+	@Delegate FileLocations locations
 
 	def void use(java.util.function.Consumer<String> consumer) {}
 

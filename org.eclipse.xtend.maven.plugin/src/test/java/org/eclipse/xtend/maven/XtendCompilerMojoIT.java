@@ -70,6 +70,9 @@ public class XtendCompilerMojoIT {
 		String content = FileUtils.fileRead(new File(generatedJava), "UTF-8");
 		Assert.assertTrue(content, content.contains("public void accept(String t)"));
 		Assert.assertTrue(content, content.contains("fn.apply(t);"));
+		Assert.assertTrue(content, content.contains("getTargetFolder(final Path sourceFolder)"));
+		Assert.assertTrue(content, content.contains("getTargetFolder(sourceFolder)"));
+		Assert.assertFalse(content, content.matches("(?s).*\\barg\\d+\\b.*"));
 	}
 
 	@Test

@@ -298,7 +298,9 @@ public class ClasspathTypeProviderTest extends AbstractTypeProviderTest {
 	}
 
 	@Test
-	public void testParameterNameFromLocalVariableTable() {
+	public void testJdkParameterNameFromSourceForConcreteMethod() {
+		// Consumer.andThen has no MethodParameters. Code is skipped, so "after" must
+		// come from the JDK source fallback rather than its LocalVariableTable.
 		doTestParameterName(Consumer.class, "andThen(java.util.function.Consumer)", "after");
 	}
 

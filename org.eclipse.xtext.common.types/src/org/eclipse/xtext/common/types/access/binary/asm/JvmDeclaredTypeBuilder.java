@@ -77,9 +77,16 @@ public class JvmDeclaredTypeBuilder extends ClassVisitor implements Opcodes {
 			// The JDK compiler module is optional in a custom runtime image.
 			jdkSourceParameterNames = null;
 		}
-		// MethodParameters and local variable names are unavailable when debug information or code is skipped.
+		// MethodParameters is a class-file attribute outside Code, so SKIP_CODE still gives us
+		// parameter names for binaries compiled with -parameters (or JDT's equivalent setting).
+		// Keep debug information enabled: SKIP_DEBUG also suppresses MethodParameters in ASM.
+		// SKIP_CODE avoids visiting method bodies, but loses parameter names stored only in
+		// Code's LocalVariableTable. Such binaries use arg0, arg1, etc. unless the optional
+		// JDK source lookup supplies their names. We assume -parameters for project binaries
+		// whose real parameter names are needed, including abstract methods with no Code.
 		reader.accept(this, 
-			  ClassReader.SKIP_FRAMES
+			  ClassReader.SKIP_CODE
+			| ClassReader.SKIP_FRAMES
 		);
 		return result;
 	}

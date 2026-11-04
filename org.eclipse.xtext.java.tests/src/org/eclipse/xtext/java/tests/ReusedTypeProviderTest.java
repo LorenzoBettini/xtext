@@ -22,9 +22,6 @@ import org.eclipse.xtext.build.IndexState;
 import org.eclipse.xtext.build.Source2GeneratedMapping;
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider;
 import org.eclipse.xtext.common.types.access.impl.AbstractTypeProviderTest;
-import org.eclipse.xtext.common.types.testSetups.AbstractMethods;
-import org.eclipse.xtext.common.types.testSetups.Bug347739ThreeTypeParamsSuperSuper;
-import org.eclipse.xtext.common.types.testSetups.ClassWithVarArgs;
 import org.eclipse.xtext.resource.IResourceServiceProvider;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.resource.impl.ChunkedResourceDescriptions;
@@ -108,25 +105,7 @@ public class ReusedTypeProviderTest extends AbstractTypeProviderTest {
 
 	@Override
 	protected String getCollectionParamName() {
-		return "arg0";
-	}
-
-	@Test
-	@Override
-	public void testParameterNames_01() {
-		doTestParameterName(Bug347739ThreeTypeParamsSuperSuper.class, "getToken(A)", "arg0");
-	}
-
-	@Test
-	@Override
-	public void testParameterNames_02() {
-		doTestParameterName(AbstractMethods.class, "abstractMethodWithParameter(java.lang.String)", "arg0");
-	}
-
-	@Test
-	@Override
-	public void testParameterNames_03() {
-		doTestParameterName(ClassWithVarArgs.class, "method(java.lang.String[])", "arg0");
+		return "c";
 	}
 
 	@Ignore

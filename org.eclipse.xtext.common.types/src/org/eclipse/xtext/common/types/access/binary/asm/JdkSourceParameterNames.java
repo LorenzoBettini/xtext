@@ -14,7 +14,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -39,6 +42,21 @@ import org.objectweb.asm.Type;
  * */
 final class JdkSourceParameterNames {
 	private static final JavaCompiler COMPILER = ToolProvider.getSystemJavaCompiler();
+	private static final int CACHE_SIZE = 128;
+	// Cache extracted signatures rather than javac trees, which retain the entire parsed source file.
+	// A missing source or class is cached as an empty list. JDK sources are stable during a JVM run.
+	private static final Map<CacheKey, List<SourceMethod>> CACHE = Collections.synchronizedMap(
+			new LinkedHashMap<>(CACHE_SIZE, 0.75f, true) {
+				private static final long serialVersionUID = 1L;
+				@Override
+				protected boolean removeEldestEntry(Map.Entry<CacheKey, List<SourceMethod>> eldest) {
+					return size() > CACHE_SIZE;
+				}
+			});
+
+	private record CacheKey(Path archive, String entry, List<String> classNames) {}
+
+	private record SourceMethod(String name, List<String> parameterTypes, List<String> parameterNames) {}
 
 	static JdkSourceParameterNames forClass(BinaryClass binaryClass) {
 		org.eclipse.emf.common.util.URI location = binaryClass.getLocationURI();
@@ -72,7 +90,7 @@ final class JdkSourceParameterNames {
 	private final String entry;
 	private final String[] classNames;
 	private boolean loaded;
-	private List<MethodTree> methods = List.of();
+	private List<SourceMethod> methods = List.of();
 
 	private JdkSourceParameterNames(Path archive, String entry, String[] classNames) {
 		this.archive = archive;
@@ -89,14 +107,14 @@ final class JdkSourceParameterNames {
 		if (leadingParameters < 0) {
 			return null;
 		}
-		MethodTree match = null;
+		SourceMethod match = null;
 		int bestScore = -1;
 		boolean ambiguous = false;
-		for (MethodTree method : methods) {
-			if (method.getName().contentEquals(methodName) && method.getParameters().size() == parameterCount) {
+		for (SourceMethod method : methods) {
+			if (method.name().equals(methodName) && method.parameterNames().size() == parameterCount) {
 				int score = 0;
 				for (int i = 0; i < parameterCount; i++) {
-					int parameterScore = matchType(method.getParameters().get(i).getType().toString(), binaryParameters[leadingParameters + i]);
+					int parameterScore = matchType(method.parameterTypes().get(i), binaryParameters[leadingParameters + i]);
 					if (parameterScore < 0) {
 						score = -1;
 						break;
@@ -115,9 +133,7 @@ final class JdkSourceParameterNames {
 		if (match == null || ambiguous) {
 			return null;
 		}
-		List<String> names = new ArrayList<>(parameterCount);
-		match.getParameters().forEach(parameter -> names.add(parameter.getName().toString()));
-		return names;
+		return match.parameterNames();
 	}
 
 	private static int matchType(String sourceType, Type binaryType) {
@@ -159,10 +175,21 @@ final class JdkSourceParameterNames {
 
 	private void load() {
 		loaded = true;
+		CacheKey key = new CacheKey(archive, entry, List.of(classNames));
+		List<SourceMethod> cached = CACHE.get(key);
+		if (cached != null) {
+			methods = cached;
+			return;
+		}
+		methods = readMethods();
+		CACHE.put(key, methods);
+	}
+
+	private List<SourceMethod> readMethods() {
 		try (ZipFile zip = new ZipFile(archive.toFile())) {
 			ZipEntry sourceEntry = zip.getEntry(entry);
 			if (sourceEntry == null) {
-				return;
+				return List.of();
 			}
 			String source;
 			try (var stream = zip.getInputStream(sourceEntry)) {
@@ -181,17 +208,24 @@ final class JdkSourceParameterNames {
 				type = findClass(type.getMembers(), classNames[i]);
 			}
 			if (type != null) {
-				List<MethodTree> found = new ArrayList<>();
+				List<SourceMethod> found = new ArrayList<>();
 				for (Tree member : type.getMembers()) {
 					if (member instanceof MethodTree method) {
-						found.add(method);
+						List<String> parameterTypes = new ArrayList<>(method.getParameters().size());
+						List<String> parameterNames = new ArrayList<>(method.getParameters().size());
+						method.getParameters().forEach(parameter -> {
+							parameterTypes.add(parameter.getType().toString());
+							parameterNames.add(parameter.getName().toString());
+						});
+						found.add(new SourceMethod(method.getName().toString(), List.copyOf(parameterTypes), List.copyOf(parameterNames)));
 					}
 				}
-				methods = found;
+				return List.copyOf(found);
 			}
 		} catch (IOException | RuntimeException | LinkageError e) {
 			// Source lookup is optional; JDK compiler classes may be unavailable from the current classloader.
 		}
+		return List.of();
 	}
 
 	private static ClassTree findClass(Iterable<? extends Tree> declarations, String name) {

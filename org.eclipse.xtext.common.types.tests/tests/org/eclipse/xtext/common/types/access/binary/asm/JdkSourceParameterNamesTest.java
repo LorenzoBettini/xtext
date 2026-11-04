@@ -31,4 +31,15 @@ public class JdkSourceParameterNamesTest {
 		assertEquals(List.of("e1"), names.getParameterNames("of", "(Ljava/lang/Object;)Ljava/util/List;", 1));
 		assertEquals(List.of("elements"), names.getParameterNames("of", "([Ljava/lang/Object;)Ljava/util/List;", 1));
 	}
+
+	@Test
+	public void namesAreAvailableAcrossSeparateClassLookups() {
+		BinaryClass binaryClass = new BinaryClass("java.util.List", getClass().getClassLoader());
+		JdkSourceParameterNames first = JdkSourceParameterNames.forClass(binaryClass);
+		JdkSourceParameterNames second = JdkSourceParameterNames.forClass(binaryClass);
+		assertNotNull(first);
+		assertNotNull(second);
+		assertEquals(List.of("e1"), first.getParameterNames("of", "(Ljava/lang/Object;)Ljava/util/List;", 1));
+		assertEquals(List.of("elements"), second.getParameterNames("of", "([Ljava/lang/Object;)Ljava/util/List;", 1));
+	}
 }

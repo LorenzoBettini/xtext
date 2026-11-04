@@ -189,8 +189,8 @@ final class JdkSourceParameterNames {
 				}
 				methods = found;
 			}
-		} catch (IOException | RuntimeException e) {
-			// Source archives are optional; the binary parameter name remains the fallback.
+		} catch (IOException | RuntimeException | LinkageError e) {
+			// Source lookup is optional; JDK compiler classes may be unavailable from the current classloader.
 		}
 	}
 

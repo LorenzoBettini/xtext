@@ -11,7 +11,10 @@ package org.eclipse.xtext.common.types.access.impl;
 import org.apache.log4j.Level;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.common.types.access.ClassLoaderFromJar;
+import org.eclipse.xtext.common.types.testSetups.AbstractMethods;
+import org.eclipse.xtext.common.types.testSetups.Bug347739ThreeTypeParamsSuperSuper;
 import org.eclipse.xtext.common.types.testSetups.Bug470767;
+import org.eclipse.xtext.common.types.testSetups.ClassWithVarArgs;
 import org.eclipse.xtext.common.types.xtext.ui.tests.RefactoringTestLanguageInjectorProvider;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
@@ -23,6 +26,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
+ * @author Lorenzo Bettini - https://github.com/eclipse-xtext/xtext/issues/2350
  */
 @RunWith(XtextRunner.class)
 @InjectWith(RefactoringTestLanguageInjectorProvider.class)
@@ -31,6 +35,24 @@ public class JarClasspathTypeProviderTest extends ClasspathTypeProviderTest {
 	@Override
 	protected ClasspathTypeProvider createTypeProvider() {
 		return new ClasspathTypeProvider(new ClassLoaderFromJar(), getResourceSet(), getIndexedJvmTypeAccess(), null);
+	}
+
+	@Override
+	@Test
+	public void testParameterNames_01() {
+		doTestParameterName(Bug347739ThreeTypeParamsSuperSuper.class, "getToken(A)", "arg0");
+	}
+
+	@Override
+	@Test
+	public void testParameterNames_02() {
+		doTestParameterName(AbstractMethods.class, "abstractMethodWithParameter(java.lang.String)", "arg0");
+	}
+
+	@Override
+	@Test
+	public void testParameterNames_03() {
+		doTestParameterName(ClassWithVarArgs.class, "method(java.lang.String[])", "strings");
 	}
 	
 	@Test

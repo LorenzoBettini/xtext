@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 itemis AG (http://www.itemis.eu) and others.
+ * Copyright (c) 2014, 2026 itemis AG (http://www.itemis.eu) and others.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -32,6 +32,7 @@ import org.objectweb.asm.Opcodes;
 
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
+ * @author Lorenzo Bettini - https://github.com/eclipse-xtext/xtext/issues/2350
  */
 public class JvmDeclaredTypeBuilder extends ClassVisitor implements Opcodes {
 
@@ -48,6 +49,8 @@ public class JvmDeclaredTypeBuilder extends ClassVisitor implements Opcodes {
 	private final BinaryClass binaryClass;
 
 	private final ClassFileBytesAccess bytesAccess;
+
+	private JdkSourceParameterNames jdkSourceParameterNames;
 
     public JvmDeclaredTypeBuilder(BinaryClass binaryClass, ClassFileBytesAccess bytesAccess, ClassLoader classLoader) {
 		this(binaryClass, bytesAccess, classLoader, null, new Proxies());
@@ -68,10 +71,15 @@ public class JvmDeclaredTypeBuilder extends ClassVisitor implements Opcodes {
     		return null;
     	}
 		ClassReader reader = new ClassReader(bytes);
+		try {
+			jdkSourceParameterNames = JdkSourceParameterNames.forClass(binaryClass);
+		} catch (LinkageError e) {
+			// The JDK compiler module is optional in a custom runtime image.
+			jdkSourceParameterNames = null;
+		}
+		// MethodParameters and local variable names are unavailable when debug information or code is skipped.
 		reader.accept(this, 
-			  ClassReader.SKIP_DEBUG 
-			| ClassReader.SKIP_FRAMES 
-			| ClassReader.SKIP_CODE
+			  ClassReader.SKIP_FRAMES
 		);
 		return result;
 	}
@@ -323,6 +331,7 @@ public class JvmDeclaredTypeBuilder extends ClassVisitor implements Opcodes {
                     desc,
                     signature,
                     exceptions);
+			builder.setJdkSourceParameterNames(jdkSourceParameterNames, name, desc);
             return builder;
     	}
     	return null;

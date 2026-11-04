@@ -9,6 +9,7 @@
 package org.eclipse.xtext.common.types.access.impl;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -37,6 +38,7 @@ import com.google.inject.Inject;
 
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
+ * @author Lorenzo Bettini - https://github.com/eclipse-xtext/xtext/issues/2350
  */
 @RunWith(XtextRunner.class)
 @InjectWith(RefactoringTestLanguageInjectorProvider.class)
@@ -276,23 +278,33 @@ public class ClasspathTypeProviderTest extends AbstractTypeProviderTest {
 
 	@Override
 	protected String getCollectionParamName() {
-		return "arg0";
+		return "c";
 	}
 	
 	@Override
 	@Test
 	public void testParameterNames_01() {
-		doTestParameterName(Bug347739ThreeTypeParamsSuperSuper.class, "getToken(A)", "arg0");
+		doTestParameterName(Bug347739ThreeTypeParamsSuperSuper.class, "getToken(A)", "owner");
 	}
 	@Override
 	@Test
 	public void testParameterNames_02() {
-		doTestParameterName(AbstractMethods.class, "abstractMethodWithParameter(java.lang.String)", "arg0");
+		doTestParameterName(AbstractMethods.class, "abstractMethodWithParameter(java.lang.String)", "parameterName");
 	}
 	@Override
 	@Test
 	public void testParameterNames_03() {
-		doTestParameterName(ClassWithVarArgs.class, "method(java.lang.String[])", "arg0");
+		doTestParameterName(ClassWithVarArgs.class, "method(java.lang.String[])", "strings");
+	}
+
+	@Test
+	public void testParameterNameFromLocalVariableTable() {
+		doTestParameterName(Consumer.class, "andThen(java.util.function.Consumer)", "after");
+	}
+
+	@Test
+	public void testJdkParameterNameFromSource() {
+		doTestParameterName(Consumer.class, "accept(T)", "t");
 	}
 	
 	@Test

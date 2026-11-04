@@ -26,10 +26,8 @@ import org.eclipse.xtext.common.types.TypesFactory;
 import org.eclipse.xtext.common.types.TypesPackage;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
@@ -44,10 +42,7 @@ public class JvmExecutableBuilder extends MethodVisitor implements Opcodes {
 	private final JvmExecutable result;
 	
 	private final int offset;
-	private final int[] parameterSlots;
 	private List<String> methodParameterNames;
-	private String[] localVariableNames;
-	private Label firstLabel;
 	private JdkSourceParameterNames jdkSourceParameterNames;
 	private String methodName;
 	private String methodDescriptor;
@@ -132,17 +127,6 @@ public class JvmExecutableBuilder extends MethodVisitor implements Opcodes {
 		}
 		fqName.append(')');
 		result.internalSetIdentifier(fqName.toString());
-		Type[] argumentTypes = Type.getArgumentTypes(desc);
-		// Class file parameters may include an implicit enclosing instance that is absent from the model.
-		int leadingParameters = Math.max(0, argumentTypes.length - result.getParameters().size());
-		parameterSlots = new int[result.getParameters().size()];
-		int slot = (access & ACC_STATIC) != 0 ? 0 : 1;
-		for (int i = 0; i < argumentTypes.length; i++) {
-			if (i >= leadingParameters && i - leadingParameters < parameterSlots.length) {
-				parameterSlots[i - leadingParameters] = slot;
-			}
-			slot += argumentTypes[i].getSize();
-		}
 		proxies.setVisibility(access, result);
 		result.setVarArgs((access & ACC_VARARGS) != 0);
 		result.setDeprecated((access & ACC_DEPRECATED) != 0);
@@ -189,9 +173,6 @@ public class JvmExecutableBuilder extends MethodVisitor implements Opcodes {
 		boolean sourceAttempted = false;
 		for (int i = 0; i < parameters.size(); i++) {
 			String name = nameOffset < 0 ? null : methodParameterNames.get(i + nameOffset);
-			if ((name == null || name.isEmpty()) && localVariableNames != null) {
-				name = localVariableNames[i];
-			}
 			if ((name == null || name.isEmpty()) && jdkSourceParameterNames != null) {
 				if (!sourceAttempted) {
 					sourceNames = jdkSourceParameterNames.getParameterNames(methodName, methodDescriptor, parameters.size());
@@ -296,30 +277,6 @@ public class JvmExecutableBuilder extends MethodVisitor implements Opcodes {
 			methodParameterNames = new ArrayList<>();
 		}
 		methodParameterNames.add(name);
-	}
-
-	@Override
-	public void visitLabel(Label label) {
-		if (firstLabel == null) {
-			firstLabel = label;
-		}
-	}
-
-	@Override
-	public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index) {
-		// A later local may reuse a parameter's slot; only names live at method entry are parameters.
-		if (start != firstLabel) {
-			return;
-		}
-		for (int i = 0; i < parameterSlots.length; i++) {
-			if (parameterSlots[i] == index && (localVariableNames == null || localVariableNames[i] == null)) {
-				if (localVariableNames == null) {
-					localVariableNames = new String[parameterSlots.length];
-				}
-				localVariableNames[i] = name;
-				return;
-			}
-		}
 	}
 
 		/**

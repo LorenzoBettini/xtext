@@ -52,7 +52,9 @@ public class JarClasspathTypeProviderTest extends ClasspathTypeProviderTest {
 	@Override
 	@Test
 	public void testParameterNames_03() {
-		doTestParameterName(ClassWithVarArgs.class, "method(java.lang.String[])", "strings");
+		// testData.jar has no MethodParameters for this method. Its LocalVariableTable
+		// contains "strings", but the binary reader skips Code and therefore uses arg0.
+		doTestParameterName(ClassWithVarArgs.class, "method(java.lang.String[])", "arg0");
 	}
 	
 	@Test

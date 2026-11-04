@@ -50,10 +50,10 @@ public class CompilerBug452821Test extends AbstractXtendCompilerTest {
     _builder_1.append("abstract class __AnonymousClassTest_1 extends Exception {");
     _builder_1.newLine();
     _builder_1.append("      ");
-    _builder_1.append("__AnonymousClassTest_1(final String arg0) {");
+    _builder_1.append("__AnonymousClassTest_1(final String message) {");
     _builder_1.newLine();
     _builder_1.append("        ");
-    _builder_1.append("super(arg0);");
+    _builder_1.append("super(message);");
     _builder_1.newLine();
     _builder_1.append("      ");
     _builder_1.append("}");

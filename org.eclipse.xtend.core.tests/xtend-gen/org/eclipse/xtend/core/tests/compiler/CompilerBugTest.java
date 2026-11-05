@@ -1117,10 +1117,10 @@ public class CompilerBugTest extends AbstractXtendCompilerTest {
     _builder_1.append("return new Function1<String, Boolean>() {");
     _builder_1.newLine();
     _builder_1.append("          ");
-    _builder_1.append("public Boolean apply(String arg0) {");
+    _builder_1.append("public Boolean apply(String p) {");
     _builder_1.newLine();
     _builder_1.append("            ");
-    _builder_1.append("return C.this.myGuavaPredicate().apply(arg0);");
+    _builder_1.append("return C.this.myGuavaPredicate().apply(p);");
     _builder_1.newLine();
     _builder_1.append("          ");
     _builder_1.append("}");

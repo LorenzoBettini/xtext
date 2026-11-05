@@ -469,8 +469,7 @@ class CompilerBugTest extends AbstractXtendCompilerTest {
 	}
 	
 	@Test def void testReturnExpressionConverted_04() {
-		// This test setup does not provide a usable name for Predicate.apply's parameter.
-		// The generated adapter therefore uses the binary type provider's arg0 fallback.
+		// The reactor builds Function1.apply with -parameters, preserving its declared name p.
 		assertCompilesTo('''
 			class C {
 				def foo() {
@@ -496,8 +495,8 @@ class CompilerBugTest extends AbstractXtendCompilerTest {
 			    boolean _equals = Objects.equals("foo", null);
 			    if (_equals) {
 			      return new Function1<String, Boolean>() {
-			          public Boolean apply(String arg0) {
-			            return C.this.myGuavaPredicate().apply(arg0);
+			          public Boolean apply(String p) {
+			            return C.this.myGuavaPredicate().apply(p);
 			          }
 			      };
 			    } else {

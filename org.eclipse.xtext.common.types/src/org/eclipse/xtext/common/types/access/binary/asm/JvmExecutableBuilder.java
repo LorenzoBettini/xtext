@@ -43,9 +43,6 @@ public class JvmExecutableBuilder extends MethodVisitor implements Opcodes {
 	
 	private final int offset;
 	private List<String> methodParameterNames;
-	private JdkSourceParameterNames jdkSourceParameterNames;
-	private String methodName;
-	private String methodDescriptor;
 
 	private String returnType;
 
@@ -148,12 +145,6 @@ public class JvmExecutableBuilder extends MethodVisitor implements Opcodes {
 		}
     }
 
-	void setJdkSourceParameterNames(JdkSourceParameterNames names, String methodName, String methodDescriptor) {
-		this.jdkSourceParameterNames = names;
-		this.methodName = methodName;
-		this.methodDescriptor = methodDescriptor;
-	}
-    
     @Override
 	public void visitAttribute(Attribute attr) {
     	// nothing to do
@@ -169,19 +160,8 @@ public class JvmExecutableBuilder extends MethodVisitor implements Opcodes {
     public void visitEnd() {
 		List<JvmFormalParameter> parameters = result.getParameters();
 		int nameOffset = methodParameterNames == null ? -1 : methodParameterNames.size() - parameters.size();
-		List<String> sourceNames = null;
-		boolean sourceAttempted = false;
 		for (int i = 0; i < parameters.size(); i++) {
 			String name = nameOffset < 0 ? null : methodParameterNames.get(i + nameOffset);
-			if ((name == null || name.isEmpty()) && jdkSourceParameterNames != null) {
-				if (!sourceAttempted) {
-					sourceNames = jdkSourceParameterNames.getParameterNames(methodName, methodDescriptor, parameters.size());
-					sourceAttempted = true;
-				}
-				if (sourceNames != null) {
-					name = sourceNames.get(i);
-				}
-			}
 			if (name != null && !name.isEmpty()) {
 				parameters.get(i).setName(name);
 			}

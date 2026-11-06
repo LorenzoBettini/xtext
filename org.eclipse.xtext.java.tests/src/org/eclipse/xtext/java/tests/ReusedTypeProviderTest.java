@@ -105,7 +105,7 @@ public class ReusedTypeProviderTest extends AbstractTypeProviderTest {
 
 	@Override
 	protected String getCollectionParamName() {
-		return "c";
+		return "arg0";
 	}
 
 	@Ignore

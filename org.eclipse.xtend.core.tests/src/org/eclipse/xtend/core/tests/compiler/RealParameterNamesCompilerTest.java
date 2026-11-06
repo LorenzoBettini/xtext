@@ -24,7 +24,7 @@ public class RealParameterNamesCompilerTest extends AbstractXtendTestCase {
 	private CompilerTestHelper compiler;
 
 	@Test
-	public void consumerAdapterUsesJdkSourceParameterName() {
+	public void consumerAdapterUsesSyntheticParameterName() {
 		String javaCode = compiler.toJavaCode("""
 				package foo
 				import java.util.function.Consumer
@@ -35,8 +35,8 @@ public class RealParameterNamesCompilerTest extends AbstractXtendTestCase {
 					}
 				}
 				""");
-		assertTrue(javaCode, javaCode.contains("public void accept(String t)"));
-		assertTrue(javaCode, javaCode.contains("fn.apply(t);"));
+		assertTrue(javaCode, javaCode.contains("public void accept(String arg0)"));
+		assertTrue(javaCode, javaCode.contains("fn.apply(arg0);"));
 		compiler.compileToClass(javaCode);
 	}
 

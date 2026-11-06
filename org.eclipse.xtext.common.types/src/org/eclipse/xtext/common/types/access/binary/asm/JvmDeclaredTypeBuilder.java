@@ -50,8 +50,6 @@ public class JvmDeclaredTypeBuilder extends ClassVisitor implements Opcodes {
 
 	private final ClassFileBytesAccess bytesAccess;
 
-	private JdkSourceParameterNames jdkSourceParameterNames;
-
     public JvmDeclaredTypeBuilder(BinaryClass binaryClass, ClassFileBytesAccess bytesAccess, ClassLoader classLoader) {
 		this(binaryClass, bytesAccess, classLoader, null, new Proxies());
 	}
@@ -71,19 +69,13 @@ public class JvmDeclaredTypeBuilder extends ClassVisitor implements Opcodes {
     		return null;
     	}
 		ClassReader reader = new ClassReader(bytes);
-		try {
-			jdkSourceParameterNames = JdkSourceParameterNames.forClass(binaryClass);
-		} catch (LinkageError e) {
-			// The JDK compiler module is optional in a custom runtime image.
-			jdkSourceParameterNames = null;
-		}
 		// MethodParameters is a class-file attribute outside Code, so SKIP_CODE still gives us
 		// parameter names for binaries compiled with -parameters (or JDT's equivalent setting).
 		// Keep debug information enabled: SKIP_DEBUG also suppresses MethodParameters in ASM.
 		// SKIP_CODE avoids visiting method bodies, but loses parameter names stored only in
-		// Code's LocalVariableTable. Such binaries use arg0, arg1, etc. unless the optional
-		// JDK source lookup supplies their names. We assume -parameters for project binaries
-		// whose real parameter names are needed, including abstract methods with no Code.
+		// Code's LocalVariableTable. Such binaries use arg0, arg1, etc. We assume
+		// -parameters for project binaries whose real parameter names are needed,
+		// including abstract methods with no Code.
 		reader.accept(this, 
 			  ClassReader.SKIP_CODE
 			| ClassReader.SKIP_FRAMES
@@ -338,7 +330,6 @@ public class JvmDeclaredTypeBuilder extends ClassVisitor implements Opcodes {
                     desc,
                     signature,
                     exceptions);
-			builder.setJdkSourceParameterNames(jdkSourceParameterNames, name, desc);
             return builder;
     	}
     	return null;

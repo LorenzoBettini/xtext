@@ -278,7 +278,7 @@ public class ClasspathTypeProviderTest extends AbstractTypeProviderTest {
 
 	@Override
 	protected String getCollectionParamName() {
-		return "c";
+		return "arg0";
 	}
 	
 	@Override
@@ -298,15 +298,14 @@ public class ClasspathTypeProviderTest extends AbstractTypeProviderTest {
 	}
 
 	@Test
-	public void testJdkParameterNameFromSourceForConcreteMethod() {
-		// Consumer.andThen has no MethodParameters. Code is skipped, so "after" must
-		// come from the JDK source fallback rather than its LocalVariableTable.
-		doTestParameterName(Consumer.class, "andThen(java.util.function.Consumer)", "after");
+	public void testJdkConcreteMethodWithoutMethodParametersUsesSyntheticName() {
+		// Consumer.andThen has no MethodParameters; its LocalVariableTable is in skipped Code.
+		doTestParameterName(Consumer.class, "andThen(java.util.function.Consumer)", "arg0");
 	}
 
 	@Test
-	public void testJdkParameterNameFromSource() {
-		doTestParameterName(Consumer.class, "accept(T)", "t");
+	public void testJdkAbstractMethodWithoutMethodParametersUsesSyntheticName() {
+		doTestParameterName(Consumer.class, "accept(T)", "arg0");
 	}
 	
 	@Test

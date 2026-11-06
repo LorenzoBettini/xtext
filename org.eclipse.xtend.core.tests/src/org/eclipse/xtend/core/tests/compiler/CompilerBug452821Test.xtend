@@ -29,8 +29,8 @@ class CompilerBug452821Test extends AbstractXtendCompilerTest {
 			public class AnonymousClassTest {
 			  public Exception test() {
 			    abstract class __AnonymousClassTest_1 extends Exception {
-			      __AnonymousClassTest_1(final String message) {
-			        super(message);
+			      __AnonymousClassTest_1(final String arg0) {
+			        super(arg0);
 			      }
 			
 			      String field;
